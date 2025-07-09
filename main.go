@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func main() {
@@ -14,6 +15,7 @@ func main() {
 }
 
 func calculator1() {
+	// Open log file in append mode
 	file, err := os.OpenFile("log.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		fmt.Println(err)
@@ -22,7 +24,7 @@ func calculator1() {
 	defer file.Close()
 
 	multiWriter := io.MultiWriter(os.Stdout, file)
-	fmt.Fprintln(file, "Calculator started")
+	logf(file, "Calculator started")
 
 	for {
 		arg1 := promptNum("Please input first argument")
@@ -31,17 +33,22 @@ func calculator1() {
 
 		result, err := calc(arg1, operator, arg2)
 		if err != nil {
-			fmt.Fprintln(multiWriter, err)
+			logf(multiWriter, "Error: %v", err)
 		} else {
-			fmt.Fprintf(multiWriter, "%d %s %d = %f\n", arg1, operator, arg2, result)
+			logf(multiWriter, "%d %s %d = %f", arg1, operator, arg2, result)
 		}
 
 		continueWill := promptStr("Do you want to continue? (y/n)")
 		if strings.ToLower(continueWill) == "n" {
+			logf(multiWriter, "Calculator exited")
 			break
 		}
 	}
+}
 
+func logf(w io.Writer, format string, a ...interface{}) {
+	timestamp := time.Now().Format("2006-01-02 15:04:05")
+	fmt.Fprintf(w, "[%s] %s\n", timestamp, fmt.Sprintf(format, a...))
 }
 
 func promptNum(prompt string) int {
