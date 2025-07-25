@@ -11,10 +11,10 @@ import (
 )
 
 func main() {
-	calculator1()
+	calculator()
 }
 
-func calculator1() {
+func calculator() {
 	// Open log file in append mode
 	file, err := os.OpenFile("log.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
