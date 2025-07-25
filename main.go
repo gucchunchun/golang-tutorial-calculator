@@ -33,10 +33,10 @@ func calculator() {
 
 		result, err := calc(arg1, operator, arg2)
 		if err != nil {
-			logf(multiWriter, "Error: %v", err)
+			logf(multiWriter, fmt.Sprintf("Error: %v", err))
 		} else {
 			fmt.Printf("%d %s %d = %f\n", arg1, operator, arg2, result)
-			logf(file, "%d %s %d = %f", arg1, operator, arg2, result)
+			logf(file, fmt.Sprintf("%d %s %d = %f", arg1, operator, arg2, result))
 		}
 
 		continueWill := promptStr("Do you want to continue? (y/n)")
@@ -47,9 +47,9 @@ func calculator() {
 	}
 }
 
-func logf(w io.Writer, format string, a ...interface{}) {
+func logf(w io.Writer, content string) {
 	timestamp := time.Now().Format("2006-01-02 15:04:05")
-	fmt.Fprintf(w, "[%s] %s\n", timestamp, fmt.Sprintf(format, a...))
+	fmt.Fprintf(w, "[%s] %s\n", timestamp, content)
 }
 
 func promptNum(prompt string) int {
