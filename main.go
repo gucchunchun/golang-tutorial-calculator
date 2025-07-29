@@ -77,16 +77,16 @@ func promptStr(prompt string) string {
 func calc(arg1 float64, operator string, arg2 float64) (float64, error) {
 	switch operator {
 	case "+":
-		return float64(arg1 + arg2), nil
+		return arg1 + arg2, nil
 	case "-":
-		return float64(arg1 - arg2), nil
+		return arg1 - arg2, nil
 	case "*":
-		return float64(arg1 * arg2), nil
+		return arg1 * arg2, nil
 	case "/":
 		if arg2 == 0 {
 			return 0, fmt.Errorf("cannot divide by zero")
 		}
-		return float64(arg1) / float64(arg2), nil
+		return arg1 / arg2, nil
 	default:
 		return 0, fmt.Errorf("invalid operator: %s", operator)
 	}
