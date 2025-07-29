@@ -35,8 +35,8 @@ func calculator() {
 		if err != nil {
 			logf(multiWriter, fmt.Sprintf("Error: %v", err))
 		} else {
-			fmt.Printf("%d %s %d = %f\n", arg1, operator, arg2, result)
-			logf(file, fmt.Sprintf("%d %s %d = %f", arg1, operator, arg2, result))
+			fmt.Printf("%f %s %f = %f\n", arg1, operator, arg2, result)
+			logf(file, fmt.Sprintf("%f %s %f = %f", arg1, operator, arg2, result))
 		}
 
 		continueWill := promptStr("Do you want to continue? (y/n)")
@@ -52,15 +52,15 @@ func logf(w io.Writer, content string) {
 	fmt.Fprintf(w, "[%s] %s\n", timestamp, content)
 }
 
-func promptNum(prompt string) int {
+func promptNum(prompt string) float64 {
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Println(prompt)
 		scanner.Scan()
 		input := scanner.Text()
-		n, err := strconv.Atoi(input)
+		n, err := strconv.ParseFloat(input, 64)
 		if err != nil {
-			fmt.Println("Invalid number, please enter a valid integer.")
+			fmt.Println("Invalid number, please enter a valid number.")
 			continue
 		}
 		return n
@@ -74,7 +74,7 @@ func promptStr(prompt string) string {
 	return s
 }
 
-func calc(arg1 int, operator string, arg2 int) (float64, error) {
+func calc(arg1 float64, operator string, arg2 float64) (float64, error) {
 	switch operator {
 	case "+":
 		return float64(arg1 + arg2), nil
