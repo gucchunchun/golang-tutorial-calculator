@@ -35,8 +35,8 @@ func calculator() {
 		if err != nil {
 			logf(multiWriter, fmt.Sprintf("Error: %v", err))
 		} else {
-			fmt.Printf("%f %s %f = %f\n", arg1, operator, arg2, result)
-			logf(file, fmt.Sprintf("%f %s %f = %f", arg1, operator, arg2, result))
+			fmt.Printf("%f %s %f = %.2f\n", arg1, operator, arg2, result)
+			logf(file, fmt.Sprintf("%f %s %f = %.2f", arg1, operator, arg2, result))
 		}
 
 		continueWill := promptStr("Do you want to continue? (y/n)")
