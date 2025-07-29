@@ -1,16 +1,24 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"io"
 	"os"
-	"strconv"
 	"strings"
 	"time"
+
+	"github.com/shopspring/decimal"
 )
 
 func main() {
+	// fmt.Println("浮動小数点数の計算の不正確性")
+	// a := 0.1
+	// b := 0.2
+	// fmt.Printf("a = %.17f\n", a)
+	// fmt.Printf("b = %.17f\n", b)
+	// fmt.Printf("a + b = %.17f\n", a+b)
+	// fmt.Printf("Expected: 0.30000000000000000\n\n")
+
 	calculator()
 }
 
@@ -35,8 +43,8 @@ func calculator() {
 		if err != nil {
 			logf(multiWriter, fmt.Sprintf("Error: %v", err))
 		} else {
-			fmt.Printf("%.2f %s %.2f = %.2f\n", arg1, operator, arg2, result)
-			logf(file, fmt.Sprintf("%.2f %s %.2f = %.2f", arg1, operator, arg2, result))
+			fmt.Printf("%v %s %v = %v\n", arg1, operator, arg2, result)
+			logf(file, fmt.Sprintf("%v %s %v = %v", arg1, operator, arg2, result))
 		}
 
 		continueWill := promptStr("Do you want to continue? (y/n)")
@@ -52,19 +60,14 @@ func logf(w io.Writer, content string) {
 	fmt.Fprintf(w, "[%s] %s\n", timestamp, content)
 }
 
-func promptNum(prompt string) float64 {
-	scanner := bufio.NewScanner(os.Stdin)
-	for {
-		fmt.Println(prompt)
-		scanner.Scan()
-		input := scanner.Text()
-		n, err := strconv.ParseFloat(input, 64)
-		if err != nil {
-			fmt.Println("Invalid number, please enter a valid number.")
-			continue
-		}
-		return n
+func promptNum(prompt string) decimal.Decimal {
+	input := promptStr(prompt)
+	d, err := decimal.NewFromString(input)
+	if err != nil {
+		fmt.Println("Invalid number, please enter a valid number.")
+		return promptNum(prompt)
 	}
+	return d
 }
 
 func promptStr(prompt string) string {
@@ -74,20 +77,20 @@ func promptStr(prompt string) string {
 	return s
 }
 
-func calc(arg1 float64, operator string, arg2 float64) (float64, error) {
+func calc(arg1 decimal.Decimal, operator string, arg2 decimal.Decimal) (decimal.Decimal, error) {
 	switch operator {
 	case "+":
-		return arg1 + arg2, nil
+		return arg1.Add(arg2), nil
 	case "-":
-		return arg1 - arg2, nil
+		return arg1.Sub(arg2), nil
 	case "*":
-		return arg1 * arg2, nil
+		return arg1.Mul(arg2), nil
 	case "/":
-		if arg2 == 0 {
-			return 0, fmt.Errorf("cannot divide by zero")
+		if decimal.Zero.Equal(arg2) {
+			return decimal.Zero, fmt.Errorf("cannot divide by zero")
 		}
-		return arg1 / arg2, nil
+		return arg1.Div(arg2), nil
 	default:
-		return 0, fmt.Errorf("invalid operator: %s", operator)
+		return decimal.Zero, fmt.Errorf("invalid operator: %s", operator)
 	}
 }
